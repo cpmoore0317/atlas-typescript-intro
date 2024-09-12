@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Playlist from "./components/Playlist";
+import PlayControls from "./components/PlayControls";
+import VolumeControls from "./components/VolumeControl";
 
 type Song = {
   title: string;
@@ -10,11 +12,15 @@ type Song = {
 const MusicPlayer: React.FC = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(50);
 
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
-        const response = await fetch("https://raw.githubusercontent.com/atlas-jswank/atlas-music-player-api/main/playlist");
+        const response = await fetch(
+          "https://raw.githubusercontent.com/atlas-jswank/atlas-music-player-api/main/playlist"
+        );
         const data: Song[] = await response.json();
         setSongs(data);
       } catch (error) {
@@ -25,8 +31,24 @@ const MusicPlayer: React.FC = () => {
     fetchPlaylist();
   }, []);
 
-  const handleSongSelect = (index: number) => {
-    setCurrentSongIndex(index);
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleNextSong = () => {
+    if (currentSongIndex < songs.length - 1) {
+      setCurrentSongIndex(currentSongIndex + 1);
+    }
+  };
+
+  const handlePreviousSong = () => {
+    if (currentSongIndex > 0) {
+      setCurrentSongIndex(currentSongIndex - 1);
+    }
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
   };
 
   return (
@@ -42,12 +64,21 @@ const MusicPlayer: React.FC = () => {
               </>
             )}
           </div>
+          <PlayControls
+            isPlaying={isPlaying}
+            onPlayPause={handlePlayPause}
+            onNext={handleNextSong}
+            onPrevious={handlePreviousSong}
+            disablePrevious={currentSongIndex === 0}
+            disableNext={currentSongIndex === songs.length - 1}
+          />
+          <VolumeControls volume={volume} onVolumeChange={handleVolumeChange} />
         </div>
         <div className="flex-1">
           <Playlist
             songs={songs}
             currentSongIndex={currentSongIndex}
-            onSongSelect={handleSongSelect}
+            onSongSelect={setCurrentSongIndex}
           />
         </div>
       </div>
