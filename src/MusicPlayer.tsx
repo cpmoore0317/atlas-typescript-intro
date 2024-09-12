@@ -1,26 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PlayControls from "./components/PlayControls";
 import Playlist from "./components/Playlist";
 import CurrentlyPlaying from "./components/CurrentlyPlaying";
+import usePlaylistData from "./hooks/usePlaylistData";
 
 const MusicPlayer: React.FC = () => {
-  const [playlist, setPlaylist] = useState<any[]>([]); // Fetch playlist data from API
+  const { data: playlist, loading } = usePlaylistData();
   const [currentSongIndex, setCurrentSongIndex] = useState(0); // Track current song
   const [isPlaying, setIsPlaying] = useState(false); // Play/pause state
   const [isShuffling, setIsShuffling] = useState(false); // Shuffle state
   const [volume, setVolume] = useState(50); // Volume state (0-100)
-
-  // Fetch playlist from API
-  useEffect(() => {
-    const fetchPlaylist = async () => {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/atlas-jswank/atlas-music-player-api/main/playlist"
-      );
-      const data = await response.json();
-      setPlaylist(data);
-    };
-    fetchPlaylist();
-  }, []);
 
   const handlePlayPause = () => {
     setIsPlaying((prev) => !prev);
@@ -50,6 +39,10 @@ const MusicPlayer: React.FC = () => {
   };
 
   const currentSong = playlist[currentSongIndex] || {};
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white text-black rounded-lg shadow-thin">
