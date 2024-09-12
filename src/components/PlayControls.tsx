@@ -33,42 +33,41 @@ const PlayControls: React.FC<PlayControlsProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center space-y-2">
-      <div className="flex items-center space-x-4">
+    <div className="flex flex-col w-full">
+      {/* Controls Row */}
+      <div className="flex items-center justify-between w-full space-x-4">
         {/* Speed Button */}
         <button onClick={handleSpeedClick} className="text-gray-500 hover:text-black">
           {speed}x
         </button>
 
-        {/* Back Button */}
-        <button onClick={onPrevious} disabled={disablePrevious}>
-          <BackwardIcon className="h-6 w-6 text-gray-500 hover:text-black" />
+        {/* Rewind Button */}
+        <button onClick={onPrevious} disabled={disablePrevious} className="text-gray-500 hover:text-black">
+          <BackwardIcon className="h-6 w-6" />
         </button>
 
         {/* Play/Pause Button */}
-        <button onClick={onPlayPause}>
+        <button onClick={onPlayPause} className="text-gray-500 hover:text-black">
           {isPlaying ? (
-            <PauseIcon className="h-6 w-6 text-gray-500 hover:text-black" />
+            <PauseIcon className="h-8 w-8" />
           ) : (
-            <PlayIcon className="h-6 w-6 text-gray-500 hover:text-black" />
+            <PlayIcon className="h-8 w-8" />
           )}
         </button>
 
         {/* Forward Button */}
-        <button onClick={onNext} disabled={disableNext}>
-          <ForwardIcon className="h-6 w-6 text-gray-500 hover:text-black" />
+        <button onClick={onNext} disabled={disableNext} className="text-gray-500 hover:text-black">
+          <ForwardIcon className="h-6 w-6" />
         </button>
 
         {/* Shuffle Button */}
-        <button onClick={onShuffleToggle}>
-          <ArrowsRightLeftIcon
-            className={`h-6 w-6 ${isShuffling ? "text-black" : "text-gray-500"} hover:text-black`}
-          />
+        <button onClick={onShuffleToggle} className={`text-gray-500 hover:text-black ${isShuffling ? 'text-blue-500' : ''}`}>
+          <ArrowsRightLeftIcon className="h-6 w-6" />
         </button>
       </div>
 
       {/* Volume Controls */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center w-full mt-4 space-x-2">
         <SpeakerWaveIcon className="h-6 w-6 text-gray-500 hover:text-black" />
         <input
           type="range"
@@ -76,7 +75,7 @@ const PlayControls: React.FC<PlayControlsProps> = ({
           max="100"
           value={volume}
           onChange={(e) => onVolumeChange(Number(e.target.value))}
-          className="w-24"
+          className="flex-1"
         />
       </div>
     </div>

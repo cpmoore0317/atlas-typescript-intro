@@ -8,7 +8,7 @@ type CurrentlyPlayingProps = {
 
 const CurrentlyPlaying: React.FC<CurrentlyPlayingProps> = ({ coverArt, title, artist }) => {
   return (
-    <div className="text-center mb-4">
+    <div className="text-left mb-4">
       <img
         src={coverArt || "/placeholder.png"}
         alt="Cover Art"
