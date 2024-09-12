@@ -1,85 +1,91 @@
-import React, { useEffect, useState } from "react";
-import Playlist from "./components/Playlist";
+import React, { useState, useEffect } from "react";
 import PlayControls from "./components/PlayControls";
-import VolumeControls from "./components/VolumeControl";
-
-type Song = {
-  title: string;
-  author: string;
-  duration: string;
-};
+import Playlist from "./components/Playlist";
 
 const MusicPlayer: React.FC = () => {
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(50);
+  const [playlist, setPlaylist] = useState<any[]>([]); // Fetch playlist data from API
+  const [currentSongIndex, setCurrentSongIndex] = useState(0); // Track current song
+  const [isPlaying, setIsPlaying] = useState(false); // Play/pause state
+  const [isShuffling, setIsShuffling] = useState(false); // Shuffle state
+  const [volume, setVolume] = useState(50); // Volume state (0-100)
 
+  // Fetch playlist from API
   useEffect(() => {
     const fetchPlaylist = async () => {
-      try {
-        const response = await fetch(
-          "https://raw.githubusercontent.com/atlas-jswank/atlas-music-player-api/main/playlist"
-        );
-        const data: Song[] = await response.json();
-        setSongs(data);
-      } catch (error) {
-        console.error("Error fetching playlist:", error);
-      }
+      const response = await fetch(
+        "https://raw.githubusercontent.com/atlas-jswank/atlas-music-player-api/main/playlist"
+      );
+      const data = await response.json();
+      setPlaylist(data);
     };
-
     fetchPlaylist();
   }, []);
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    setIsPlaying((prev) => !prev);
   };
 
-  const handleNextSong = () => {
-    if (currentSongIndex < songs.length - 1) {
+  const handleNext = () => {
+    if (isShuffling) {
+      const randomIndex = Math.floor(Math.random() * playlist.length);
+      setCurrentSongIndex(randomIndex);
+    } else if (currentSongIndex < playlist.length - 1) {
       setCurrentSongIndex(currentSongIndex + 1);
     }
   };
 
-  const handlePreviousSong = () => {
+  const handlePrevious = () => {
     if (currentSongIndex > 0) {
       setCurrentSongIndex(currentSongIndex - 1);
     }
   };
 
-  const handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
+  const toggleShuffle = () => {
+    setIsShuffling((prev) => !prev);
+  };
+
+  const handleVolumeChange = (value: number) => {
+    setVolume(value);
   };
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white text-black rounded-lg shadow-thin">
-      <div className="flex flex-col md:flex-row md:items-start space-y-8 md:space-y-0 md:space-x-8">
-        <div className="flex-1">
-          <div>
-            <h3>Currently Playing</h3>
-            {songs.length > 0 && (
-              <>
-                <p>{songs[currentSongIndex].title}</p>
-                <p>{songs[currentSongIndex].author}</p>
-              </>
+      <div className="flex flex-col md:flex-row md:space-x-8">
+        {/* Currently Playing Section */}
+        <div className="flex-1 mb-6 md:mb-0">
+          <div className="flex flex-col items-center">
+            {playlist.length > 0 && (
+              <div className="text-center mb-4">
+                <img
+                  src={playlist[currentSongIndex]?.coverArt || "/placeholder.png"}
+                  alt="Cover Art"
+                  className="w-32 h-32 object-cover rounded-md"
+                />
+                <h3 className="text-xl font-bold">{playlist[currentSongIndex].title}</h3>
+                <p className="text-gray-500">{playlist[currentSongIndex].artist}</p>
+              </div>
             )}
+            
+            <div className="mb-4">
+              <PlayControls
+                isPlaying={isPlaying}
+                onPlayPause={handlePlayPause}
+                onNext={handleNext}
+                onPrevious={handlePrevious}
+                disablePrevious={currentSongIndex === 0}
+                disableNext={currentSongIndex === playlist.length - 1}
+                onShuffleToggle={toggleShuffle}
+                isShuffling={isShuffling}
+                volume={volume}
+                onVolumeChange={handleVolumeChange}
+              />
+            </div>
           </div>
-          <PlayControls
-            isPlaying={isPlaying}
-            onPlayPause={handlePlayPause}
-            onNext={handleNextSong}
-            onPrevious={handlePreviousSong}
-            disablePrevious={currentSongIndex === 0}
-            disableNext={currentSongIndex === songs.length - 1}
-          />
-          <VolumeControls volume={volume} onVolumeChange={handleVolumeChange} />
         </div>
+
+        {/* Playlist Section */}
         <div className="flex-1">
-          <Playlist
-            songs={songs}
-            currentSongIndex={currentSongIndex}
-            onSongSelect={setCurrentSongIndex}
-          />
+          <Playlist songs={playlist} currentSongIndex={currentSongIndex} />
         </div>
       </div>
     </div>
