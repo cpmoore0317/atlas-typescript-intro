@@ -1,27 +1,26 @@
 import React from "react";
+import { SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
-type VolumeControlProps = {
+type VolumeControlsProps = {
   volume: number;
-  onVolumeChange: (value: number) => void;
+  onVolumeChange: (newVolume: number) => void;
 };
 
-const VolumeControl: React.FC<VolumeControlProps> = ({ volume, onVolumeChange }) => {
-  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onVolumeChange(Number(event.target.value));
-  };
-
+const VolumeControls: React.FC<VolumeControlsProps> = ({ volume, onVolumeChange }) => {
   return (
-    <div className="w-full">
+    <div className="flex items-center space-x-2">
+      <SpeakerWaveIcon className="h-6 w-6 text-gray-500 hover:text-black" />
       <input
+        id="volume"
         type="range"
         min="0"
         max="100"
         value={volume}
-        onChange={handleVolumeChange}
-        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        onChange={(e) => onVolumeChange(Number(e.target.value))}
+        className="cursor-pointer"
       />
     </div>
   );
 };
 
-export default VolumeControl;
+export default VolumeControls;
