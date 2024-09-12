@@ -1,16 +1,10 @@
 import React from "react";
 import PlayListItem from "./PlayListItem";
 
-type Song = {
-  title: string;
-  author: string;
-  duration: string;
-};
-
 type PlaylistProps = {
-  songs: Song[];
+  songs: { title: string; artist: string; duration: string }[];
   currentSongIndex: number;
-  onSongSelect: (index: number) => void;
+  onSongSelect?: (index: number) => void;
 };
 
 const Playlist: React.FC<PlaylistProps> = ({ songs, currentSongIndex, onSongSelect }) => {
@@ -19,13 +13,15 @@ const Playlist: React.FC<PlaylistProps> = ({ songs, currentSongIndex, onSongSele
       <h2 className="text-black text-lg font-bold mb-4">Playlist</h2>
       <ul className="space-y-2">
         {songs.map((song, index) => (
-          <li key={index}>
+          <li
+            key={index}
+            className={`flex justify-between items-center text-sm ${index === currentSongIndex ? 'bg-gray-200' : ''}`}
+            onClick={() => onSongSelect && onSongSelect(index)}
+          >
             <PlayListItem
               title={song.title}
-              artist={song.author}
+              artist={song.artist}
               duration={song.duration}
-              isSelected={index === currentSongIndex}
-              onClick={() => onSongSelect(index)}
             />
           </li>
         ))}
