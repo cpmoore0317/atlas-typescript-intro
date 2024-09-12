@@ -14,11 +14,11 @@ const PlayListItem: React.FC<PlayListItemProps> = ({ title, artist, duration, is
       onClick={onClick}
       className={`flex justify-between items-center py-2 ${isSelected ? "bg-gray-300" : ""}`}
     >
-      <div>
-        <h3 className="text-sm font-bold">{title}</h3>
-        <p className="text-xs text-gray-500">{artist}</p>
+      <div className="flex-grow w-32">
+        <h3 className="text-sm font-bold ml-1">{title}</h3>
+        <p className="text-xs text-gray-500 ml-1">{artist}</p>
       </div>
-      <span className="text-xs text-gray-500">{duration}</span>
+      <span className="text-xs text-gray-500 text-right ml-72 mr-1">{duration}</span>
     </div>
   );
 };

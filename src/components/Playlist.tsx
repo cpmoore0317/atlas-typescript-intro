@@ -15,13 +15,15 @@ const Playlist: React.FC<PlaylistProps> = ({ songs, currentSongIndex, onSongSele
         {songs.map((song, index) => (
           <li
             key={index}
-            className={`flex justify-between items-center text-sm ${index === currentSongIndex ? 'bg-gray-200' : ''}`}
+            className={`flex ${index === currentSongIndex ? 'bg-gray-200' : ''}`}
             onClick={() => onSongSelect && onSongSelect(index)}
           >
             <PlayListItem
               title={song.title}
               artist={song.artist}
               duration={song.duration}
+              isSelected={index === currentSongIndex}
+              onClick={() => onSongSelect && onSongSelect(index)}
             />
           </li>
         ))}
