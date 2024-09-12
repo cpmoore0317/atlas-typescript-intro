@@ -4,11 +4,16 @@ type PlayListItemProps = {
   title: string;
   artist: string;
   duration: string;
+  isSelected: boolean;
+  onClick: () => void;
 };
 
-const PlayListItem: React.FC<PlayListItemProps> = ({ title, artist, duration }) => {
+const PlayListItem: React.FC<PlayListItemProps> = ({ title, artist, duration, isSelected, onClick }) => {
   return (
-    <div className="flex justify-between items-center py-2">
+    <div
+      onClick={onClick}
+      className={`flex justify-between items-center py-2 ${isSelected ? "bg-gray-300" : ""}`}
+    >
       <div>
         <h3 className="text-sm font-bold">{title}</h3>
         <p className="text-xs text-gray-500">{artist}</p>
